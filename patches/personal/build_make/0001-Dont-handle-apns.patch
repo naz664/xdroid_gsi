@@ -1,0 +1,64 @@
+From 05d750c94bf783a0148d17e53e8ff86d8991dbbf Mon Sep 17 00:00:00 2001
+From: naz664 <nazimnavas145@gmail.com>
+Date: Tue, 13 Sep 2022 07:56:50 +0000
+Subject: [PATCH] Dont-handle-apns
+
+---
+ core/main.mk                          | 8 ++++----
+ target/product/aosp_product.mk        | 6 ------
+ target/product/full_base_telephony.mk | 5 -----
+ 3 files changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/core/main.mk b/core/main.mk
+index b20ba680a..a3fa91618 100644
+--- a/core/main.mk
++++ b/core/main.mk
+@@ -372,12 +372,12 @@ enable_target_debugging := true
+ tags_to_install :=
+ ifneq (,$(user_variant))
+   # Target is secure in user builds.
+-  ADDITIONAL_SYSTEM_PROPERTIES += ro.secure=1
++#  ADDITIONAL_SYSTEM_PROPERTIES += ro.secure=1
+   ADDITIONAL_SYSTEM_PROPERTIES += security.perf_harden=1
+ 
+-  ifeq ($(user_variant),user)
+-    ADDITIONAL_SYSTEM_PROPERTIES += ro.adb.secure=1
+-  endif
++  #ifeq ($(user_variant),user)
++ #   ADDITIONAL_SYSTEM_PROPERTIES += ro.adb.secure=1
++#  endif
+ 
+   ifeq ($(user_variant),userdebug)
+     # Pick up some extra useful tools
+diff --git a/target/product/aosp_product.mk b/target/product/aosp_product.mk
+index 23597043d..cb4bbb303 100644
+--- a/target/product/aosp_product.mk
++++ b/target/product/aosp_product.mk
+@@ -34,9 +34,3 @@ PRODUCT_PACKAGES += \
+     preinstalled-packages-platform-aosp-product.xml \
+     WallpaperPicker \
+ 
+-# Telephony:
+-#   Provide a APN configuration to GSI product
+-ifeq ($(XDROID_BUILD),)
+-PRODUCT_COPY_FILES += \
+-    device/sample/etc/apns-full-conf.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/apns-conf.xml
+-endif
+diff --git a/target/product/full_base_telephony.mk b/target/product/full_base_telephony.mk
+index 789137fa7..5470ad2be 100644
+--- a/target/product/full_base_telephony.mk
++++ b/target/product/full_base_telephony.mk
+@@ -26,10 +26,5 @@ PRODUCT_VENDOR_PROPERTIES := \
+ PRODUCT_COPY_FILES := \
+     frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
+ 
+-ifeq ($(XDROID_BUILD),)
+-PRODUCT_COPY_FILES += \
+-    device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
+-endif
+-
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony.mk)
+-- 
+2.25.1
+
